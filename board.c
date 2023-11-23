@@ -3,8 +3,11 @@
 #include "board.h"
 
 #define N_BOARD    15 //board 칸 
-#define N_COIN     12
+#define N_COINPOS     12
 #define MAX_COIN   4
+
+#define MAX_SHARKSTEP      6
+#define SHARK_INITPOS      -4
 
 // 상어에 의한 보드의 파손 여부 
 int board_status[N_BOARD];
@@ -16,7 +19,7 @@ int board_coin[N_BOARD];
 static int board_sharkPosition; 
 
 // 초기화 board 
-int board_intboard(void)
+int board_initboard(void)
 {
     int i;
     for(i=0;i<N_BOARD;i++)
@@ -25,12 +28,14 @@ int board_intboard(void)
         board_coin[i] = 0;                       
     }    
     
+    board_sharkPosition = SHARK_INITPOS; 
+    
     for(i=0;i<N_COINPOS;i++)
     {
         int flag = 0;
         while(flag == 0)
         {
-            int allocpos = rand()%N_BOARD;
+            int allocPos = rand()%N_BOARD;
             
             if(board_coin[allocPos] == 0)
             {
@@ -73,7 +78,21 @@ int board_getBoardCoin(int pos)
 int board_getSharkPosition(void);
 
 //step shark
-int board_stepShark(void);
+int board_stepShark(void)
+{
+       int step = rand()%MAX_SHARKSTEP + 1;
+       int i;
+       int shark_position;
+       
+       for(i=shark_position;i<=shark_position+step;i++)
+       {
+          if(i >= 0 && i < N_BOARD)
+             board_status[i] = BOARDSTATUS_NOK;                                                
+       }
+       
+       shark_position += step;
+       return shark_position;
+}
 
 //보드 파손 여부 
 int board_getBoardStatus(int pos) 
